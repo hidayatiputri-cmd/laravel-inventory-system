@@ -9,7 +9,6 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,189 +19,168 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Seed Demo Users (Admin, Staff, Customer)
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@inventory.com'],
+        // 1. Akun User untuk Testing (Admin, Staff, Customer)
+        $users = [
             [
-                'name' => 'Demo Admin',
+                'email' => 'admin@inventory.com',
+                'name' => 'Administrator',
                 'password' => Hash::make('password'),
                 'role' => 'admin',
                 'email_verified_at' => now(),
-            ]
-        );
-
-        $staff = User::firstOrCreate(
-            ['email' => 'staff@inventory.com'],
+            ],
             [
-                'name' => 'Demo Staff',
+                'email' => 'staff@inventory.com',
+                'name' => 'Staff Gudang & Kasir',
                 'password' => Hash::make('password'),
                 'role' => 'staff',
                 'email_verified_at' => now(),
-            ]
-        );
-
-        $customer = User::firstOrCreate(
-            ['email' => 'customer@inventory.com'],
+            ],
             [
-                'name' => 'Demo Customer',
+                'email' => 'customer@inventory.com',
+                'name' => 'Budi Santoso (Customer)',
                 'password' => Hash::make('password'),
                 'role' => 'customer',
                 'email_verified_at' => now(),
-            ]
-        );
+            ],
+        ];
 
-        // 2. Seed Categories
+        foreach ($users as $userData) {
+            User::firstOrCreate(
+                ['email' => $userData['email']],
+                $userData
+            );
+        }
+
+        // 2. Tepat 3 Kategori Utama
         $categoriesData = [
             [
-                'name' => 'Elektronik & Gadget',
-                'slug' => 'elektronik-gadget',
-                'description' => 'Perangkat elektronik, gadget, dan aksesoris komputer',
+                'name' => 'Elektronik',
+                'slug' => 'elektronik',
+                'description' => 'Perangkat elektronik, aksesoris komputer, gadget, dan periferal digital.',
             ],
             [
-                'name' => 'Alat Tulis Kantor',
-                'slug' => 'alat-tulis-kantor',
-                'description' => 'Kebutuhan ATK kantor, kertas, dan perlengkapan administrasi',
-            ],
-            [
-                'name' => 'Pakaian & Fashion',
-                'slug' => 'pakaian-fashion',
-                'description' => 'Pakaian pria, wanita, dan aksesoris fashion',
+                'name' => 'Pakaian',
+                'slug' => 'pakaian',
+                'description' => 'Pakaian pria dan wanita, busana kasual, kaos polos, dan fashion harian.',
             ],
             [
                 'name' => 'Makanan & Minuman',
                 'slug' => 'makanan-minuman',
-                'description' => 'Kebutuhan bahan pangan dan minuman kemasan',
+                'description' => 'Produk kopi, camilan, minuman kemasan, dan bahan konsumsi harian.',
             ],
         ];
 
         $categories = [];
-        foreach ($categoriesData as $cat) {
-            $categories[$cat['slug']] = Category::firstOrCreate(
-                ['slug' => $cat['slug']],
-                $cat
+        foreach ($categoriesData as $catData) {
+            $categories[$catData['slug']] = Category::firstOrCreate(
+                ['slug' => $catData['slug']],
+                $catData
             );
         }
 
-        // 3. Seed Suppliers
+        // 3. Supplier Pendukung yang Relevan dengan 3 Kategori Tersebut
         $suppliersData = [
             [
-                'name' => 'PT Sumber Mega Elektronik',
-                'email' => 'sales@sumbermega.com',
-                'phone' => '021-5551234',
-                'address' => 'Jl. Mangga Dua Raya No. 45, Jakarta Pusat',
+                'name' => 'PT Mega Elektronika Digital',
+                'email' => 'sales@megaelektronika.co.id',
+                'phone' => '021-5558901',
+                'address' => 'Kawasan Niaga Harco Mangga Dua Blok C No. 12, Jakarta Pusat',
             ],
             [
-                'name' => 'CV Makmur Sejahtera ATK',
-                'email' => 'info@makmuratk.com',
-                'phone' => '022-7778899',
-                'address' => 'Jl. Sudirman No. 120, Bandung',
+                'name' => 'CV Garmen Tekstil Nusantara',
+                'email' => 'order@garmentekstil.com',
+                'phone' => '022-7201445',
+                'address' => 'Jl. Cigondewah Industri No. 45, Bandung Kulon, Jawa Barat',
             ],
             [
-                'name' => 'PT Tekstil Nusantara Indah',
-                'email' => 'supplier@tekstilnusantara.co.id',
-                'phone' => '024-8889900',
-                'address' => 'Kawasan Industri Candi Blok A, Semarang',
-            ],
-            [
-                'name' => 'UD Berkah Pangan Abadi',
-                'email' => 'order@berkahpangan.com',
-                'phone' => '031-6663322',
-                'address' => 'Jl. Rungkut Industri No. 88, Surabaya',
+                'name' => 'PT Berkah Pangan Mandiri',
+                'email' => 'supply@berkahpangan.id',
+                'phone' => '031-8945612',
+                'address' => 'Jl. Rungkut Madya No. 88, Surabaya, Jawa Timur',
             ],
         ];
 
-        foreach ($suppliersData as $sup) {
+        foreach ($suppliersData as $supData) {
             Supplier::firstOrCreate(
-                ['name' => $sup['name']],
-                $sup
+                ['name' => $supData['name']],
+                $supData
             );
         }
 
-        // 4. Seed Products
+        // 4. 6 Produk Bervariasi Lengkap dengan SKU, Harga Beli, Harga Jual, dan Stok Awal
+        // (Masing-masing 2 produk per kategori, mencakup simulasi stok aman dan stok rendah/alert)
         $productsData = [
-            // Elektronik
+            // Kategori: Elektronik
             [
-                'category_id' => $categories['elektronik-gadget']->id,
-                'name' => 'Logitech Wireless Mouse M185',
-                'sku' => 'ELC-LOG-M185',
+                'category_id' => $categories['elektronik']->id,
+                'name' => 'Logitech Silent Wireless Mouse M220',
+                'sku' => 'ELC-MOU-M220',
+                'stock' => 35,
+                'minimum_stock' => 10,
+                'purchase_price' => 125000,
+                'selling_price' => 179000,
+                'description' => 'Mouse tanpa kabel dengan teknologi silent click 90% peredam suara dan jangkauan 10 meter.',
+            ],
+            [
+                'category_id' => $categories['elektronik']->id,
+                'name' => 'Flashdisk Kingston DataTraveler 64GB USB 3.2',
+                'sku' => 'ELC-FLS-64GB',
+                'stock' => 5, // Di bawah minimum_stock (5 <= 10) untuk memicu Low Stock Alert
+                'minimum_stock' => 10,
+                'purchase_price' => 55000,
+                'selling_price' => 85000,
+                'description' => 'Media penyimpanan portabel kecepatan tinggi USB 3.2 Gen 1 dengan bodi tutup pelindung.',
+            ],
+
+            // Kategori: Pakaian
+            [
+                'category_id' => $categories['pakaian']->id,
+                'name' => 'Kaos Polos Cotton Combed 30s Hitam (Size L)',
+                'sku' => 'PAK-TSH-CM30-L',
                 'stock' => 50,
-                'minimum_stock' => 10,
-                'purchase_price' => 110000,
-                'selling_price' => 165000,
-                'description' => 'Mouse wireless 2.4GHz ergonomis dengan baterai tahan lama.',
-            ],
-            [
-                'category_id' => $categories['elektronik-gadget']->id,
-                'name' => 'Keyboard Mechanical RGB TKL',
-                'sku' => 'ELC-KBD-RGB',
-                'stock' => 25,
-                'minimum_stock' => 5,
-                'purchase_price' => 320000,
-                'selling_price' => 450000,
-                'description' => 'Keyboard mechanical switch blue dengan backlight RGB.',
-            ],
-            [
-                'category_id' => $categories['elektronik-gadget']->id,
-                'name' => 'USB Flashdisk 64GB USB 3.0',
-                'sku' => 'ELC-FLS-064G',
-                'stock' => 8, // Di bawah minimum_stock untuk simulasi alert
-                'minimum_stock' => 15,
-                'purchase_price' => 60000,
-                'selling_price' => 95000,
-                'description' => 'Flashdrive high speed transfer 64GB casing metal.',
-            ],
-
-            // ATK
-            [
-                'category_id' => $categories['alat-tulis-kantor']->id,
-                'name' => 'Kertas HVS A4 80gr 1 Rim',
-                'sku' => 'ATK-HVS-A480',
-                'stock' => 100,
-                'minimum_stock' => 20,
-                'purchase_price' => 42000,
-                'selling_price' => 55000,
-                'description' => 'Kertas HVS ukuran A4 80 gram isi 500 lembar.',
-            ],
-            [
-                'category_id' => $categories['alat-tulis-kantor']->id,
-                'name' => 'Pulpen Gel Hitam 0.5mm (Pak isi 12)',
-                'sku' => 'ATK-PEN-GL05',
-                'stock' => 40,
-                'minimum_stock' => 10,
-                'purchase_price' => 28000,
-                'selling_price' => 40000,
-                'description' => 'Pulpen tinta gel hitam cepat kering isi 12 pcs per pak.',
-            ],
-
-            // Fashion
-            [
-                'category_id' => $categories['pakaian-fashion']->id,
-                'name' => 'Kaos Polos Cotton Combed 30s Hitam (L)',
-                'sku' => 'FSH-TSH-BLK-L',
-                'stock' => 60,
                 'minimum_stock' => 15,
                 'purchase_price' => 35000,
                 'selling_price' => 65000,
-                'description' => 'Kaos polos bahan 100% cotton combed 30s adem dan nyaman.',
+                'description' => 'Kaos polos premium bahan 100% katun combed 30s sejuk, nyaman, dan jahitan rantai rapi.',
+            ],
+            [
+                'category_id' => $categories['pakaian']->id,
+                'name' => 'Kemeja Formal Oxford Slimfit Putih (Size XL)',
+                'sku' => 'PAK-KEM-OXF-XL',
+                'stock' => 6, // Di bawah minimum_stock (6 <= 8) untuk memicu Low Stock Alert
+                'minimum_stock' => 8,
+                'purchase_price' => 85000,
+                'selling_price' => 149000,
+                'description' => 'Kemeja pria lengan panjang bahan katun oxford tebal, tidak mudah kusut, cocok untuk kerja formal.',
             ],
 
-            // Makanan & Minuman
+            // Kategori: Makanan & Minuman
             [
                 'category_id' => $categories['makanan-minuman']->id,
-                'name' => 'Kopi Arabika Gayo Specialty 250gr',
+                'name' => 'Kopi Arabika Gayo Specialty 250gr (Whole Beans)',
                 'sku' => 'FNB-KOP-GY250',
-                'stock' => 30,
+                'stock' => 25,
                 'minimum_stock' => 8,
-                'purchase_price' => 65000,
-                'selling_price' => 95000,
-                'description' => 'Biji kopi sangrai Arabika Gayo Aceh proses semi-washed.',
+                'purchase_price' => 68000,
+                'selling_price' => 98000,
+                'description' => 'Biji kopi sangrai 100% Single Origin Arabika dataran tinggi Gayo Aceh dengan proses semi-wash.',
+            ],
+            [
+                'category_id' => $categories['makanan-minuman']->id,
+                'name' => 'Madu Murni Randu Organik 500ml',
+                'sku' => 'FNB-MDU-RND-500',
+                'stock' => 18,
+                'minimum_stock' => 5,
+                'purchase_price' => 60000,
+                'selling_price' => 92000,
+                'description' => 'Madu murni alami nektar bunga randu tanpa pemanis buatan, dikemas dalam botol food-grade 500ml.',
             ],
         ];
 
-        foreach ($productsData as $prod) {
+        foreach ($productsData as $prodData) {
             Product::firstOrCreate(
-                ['sku' => $prod['sku']],
-                $prod
+                ['sku' => $prodData['sku']],
+                $prodData
             );
         }
     }
