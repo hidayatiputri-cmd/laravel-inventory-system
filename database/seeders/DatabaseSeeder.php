@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'email' => 'customer@inventory.com',
-                'name' => 'Budi Santoso (Customer)',
+                'name' => 'Customer',
                 'password' => Hash::make('password'),
                 'role' => 'customer',
                 'email_verified_at' => now(),
@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($users as $userData) {
-            User::firstOrCreate(
+            User::updateOrCreate(
                 ['email' => $userData['email']],
                 $userData
             );
@@ -107,8 +107,7 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        // 4. 6 Produk Bervariasi Lengkap dengan SKU, Harga Beli, Harga Jual, dan Stok Awal
-        // (Masing-masing 2 produk per kategori, mencakup simulasi stok aman dan stok rendah/alert)
+        // 4. Produk Bervariasi Lengkap dengan Foto Unsplash HD, SKU, Harga Beli, Harga Jual, dan Stok Awal
         $productsData = [
             // Kategori: Elektronik
             [
@@ -120,6 +119,7 @@ class DatabaseSeeder extends Seeder
                 'purchase_price' => 125000,
                 'selling_price' => 179000,
                 'description' => 'Mouse tanpa kabel dengan teknologi silent click 90% peredam suara dan jangkauan 10 meter.',
+                'image' => 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=700&auto=format&fit=crop&q=80',
             ],
             [
                 'category_id' => $categories['elektronik']->id,
@@ -130,6 +130,18 @@ class DatabaseSeeder extends Seeder
                 'purchase_price' => 55000,
                 'selling_price' => 85000,
                 'description' => 'Media penyimpanan portabel kecepatan tinggi USB 3.2 Gen 1 dengan bodi tutup pelindung.',
+                'image' => 'https://images.unsplash.com/photo-1624823183493-2415714f3ff4?w=700&auto=format&fit=crop&q=80',
+            ],
+            [
+                'category_id' => $categories['elektronik']->id,
+                'name' => 'Mechanical Gaming Keyboard RGB Backlit',
+                'sku' => 'ELC-KEY-RGB01',
+                'stock' => 20,
+                'minimum_stock' => 6,
+                'purchase_price' => 320000,
+                'selling_price' => 450000,
+                'description' => 'Keyboard mekanik switch biru tactile dengan efek lampu latar RGB dinamis dan kabel braided kokoh.',
+                'image' => 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=700&auto=format&fit=crop&q=80',
             ],
 
             // Kategori: Pakaian
@@ -142,6 +154,7 @@ class DatabaseSeeder extends Seeder
                 'purchase_price' => 35000,
                 'selling_price' => 65000,
                 'description' => 'Kaos polos premium bahan 100% katun combed 30s sejuk, nyaman, dan jahitan rantai rapi.',
+                'image' => 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=700&auto=format&fit=crop&q=80',
             ],
             [
                 'category_id' => $categories['pakaian']->id,
@@ -152,6 +165,18 @@ class DatabaseSeeder extends Seeder
                 'purchase_price' => 85000,
                 'selling_price' => 149000,
                 'description' => 'Kemeja pria lengan panjang bahan katun oxford tebal, tidak mudah kusut, cocok untuk kerja formal.',
+                'image' => 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=700&auto=format&fit=crop&q=80',
+            ],
+            [
+                'category_id' => $categories['pakaian']->id,
+                'name' => 'Jaket Hoodie Fleece Pullover Warm Grey',
+                'sku' => 'PAK-HOD-GRY-L',
+                'stock' => 16,
+                'minimum_stock' => 5,
+                'purchase_price' => 120000,
+                'selling_price' => 189000,
+                'description' => 'Jaket hoodie kasual bahan fleece premium hangat dengan saku kanguru dan tali serut tebal.',
+                'image' => 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=700&auto=format&fit=crop&q=80',
             ],
 
             // Kategori: Makanan & Minuman
@@ -164,6 +189,7 @@ class DatabaseSeeder extends Seeder
                 'purchase_price' => 68000,
                 'selling_price' => 98000,
                 'description' => 'Biji kopi sangrai 100% Single Origin Arabika dataran tinggi Gayo Aceh dengan proses semi-wash.',
+                'image' => 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=700&auto=format&fit=crop&q=80',
             ],
             [
                 'category_id' => $categories['makanan-minuman']->id,
@@ -174,11 +200,23 @@ class DatabaseSeeder extends Seeder
                 'purchase_price' => 60000,
                 'selling_price' => 92000,
                 'description' => 'Madu murni alami nektar bunga randu tanpa pemanis buatan, dikemas dalam botol food-grade 500ml.',
+                'image' => 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=700&auto=format&fit=crop&q=80',
+            ],
+            [
+                'category_id' => $categories['makanan-minuman']->id,
+                'name' => 'Matcha Premium Green Tea Powder 100gr',
+                'sku' => 'FNB-MTC-GRN-100',
+                'stock' => 14,
+                'minimum_stock' => 5,
+                'purchase_price' => 45000,
+                'selling_price' => 75000,
+                'description' => 'Bubuk teh hijau matcha murni kualitas kuliner dari Uji Jepang, cocok untuk minuman latte dan baking.',
+                'image' => 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=700&auto=format&fit=crop&q=80',
             ],
         ];
 
         foreach ($productsData as $prodData) {
-            Product::firstOrCreate(
+            Product::updateOrCreate(
                 ['sku' => $prodData['sku']],
                 $prodData
             );

@@ -24,25 +24,28 @@
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="p-6 sm:p-8">
-                    <!-- Status Header -->
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b border-gray-100 gap-4">
-                        <div>
-                            <span class="text-xs font-mono bg-gray-100 text-gray-700 px-2.5 py-1 rounded">SKU: {{ $product->sku }}</span>
-                            <h3 class="text-2xl font-bold text-gray-900 mt-2">{{ $product->name }}</h3>
-                            <p class="text-sm text-gray-500 mt-1">
-                                Kategori: <span class="font-semibold text-indigo-600">{{ $product->category ? $product->category->name : 'Tanpa Kategori' }}</span>
-                            </p>
+                    <!-- Status Header & Foto -->
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 pb-6 border-b border-gray-100">
+                        <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shrink-0 shadow-md">
+                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                         </div>
-                        <div>
-                            @if ($product->stock <= $product->minimum_stock)
-                                <span class="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-rose-100 text-rose-700">
-                                    Stok Menipis ({{ $product->stock }} tersisa)
-                                </span>
-                            @else
-                                <span class="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-semibold bg-emerald-100 text-emerald-700">
-                                    Stok Tersedia ({{ $product->stock }} unit)
-                                </span>
-                            @endif
+                        <div class="flex-1">
+                            <div class="flex flex-wrap items-center justify-between gap-3">
+                                <span class="text-xs font-mono bg-gray-100 text-gray-700 px-2.5 py-1 rounded">SKU: {{ $product->sku }}</span>
+                                @if ($product->stock <= $product->minimum_stock)
+                                    <span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-black bg-rose-100 text-rose-700 animate-pulse">
+                                        Stok Menipis ({{ $product->stock }} tersisa)
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">
+                                        Stok Tersedia ({{ $product->stock }} unit)
+                                    </span>
+                                @endif
+                            </div>
+                            <h3 class="text-2xl font-black text-gray-900 mt-2">{{ $product->name }}</h3>
+                            <p class="text-sm text-gray-500 mt-1">
+                                Kategori: <span class="font-bold text-indigo-600">{{ $product->category ? $product->category->name : 'Tanpa Kategori' }}</span>
+                            </p>
                         </div>
                     </div>
 

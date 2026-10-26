@@ -18,7 +18,7 @@
             <x-alert />
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-8">
-                <form action="{{ route('products.store') }}" method="POST" class="space-y-6">
+                <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -98,6 +98,36 @@
                             @error('minimum_stock')
                                 <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
                             @enderror
+                        </div>
+
+                        <!-- Bagian Foto Produk (Upload File atau URL) -->
+                        <div class="sm:col-span-2 bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-4">
+                            <div class="flex items-center gap-2 text-indigo-900 font-bold text-sm">
+                                <i class="fa-solid fa-image text-indigo-600"></i>
+                                <span>Foto & Visualisasi Produk (E-Commerce Ready)</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="image_file" class="block text-xs font-semibold text-gray-700 mb-1">
+                                        Upload File Foto (Max 2MB)
+                                    </label>
+                                    <input type="file" name="image_file" id="image_file" accept="image/*" class="w-full text-xs text-gray-700 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 bg-white rounded-lg border border-gray-300 p-1 @error('image_file') border-rose-500 @enderror">
+                                    @error('image_file')
+                                        <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="image_url" class="block text-xs font-semibold text-gray-700 mb-1">
+                                        Atau Masukkan URL Gambar (Unsplash / Web)
+                                    </label>
+                                    <input type="url" name="image_url" id="image_url" value="{{ old('image_url') }}" placeholder="https://images.unsplash.com/photo-..." class="w-full text-sm rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 bg-white @error('image_url') border-rose-500 @enderror">
+                                    @error('image_url')
+                                        <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
 
                         <div class="sm:col-span-2">

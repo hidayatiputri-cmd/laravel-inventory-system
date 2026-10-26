@@ -44,7 +44,13 @@ class SaleController extends Controller
     public function create(): View
     {
         $customers = User::where('role', 'customer')->orderBy('name')->get();
-        $products = Product::where('stock', '>', 0)->orderBy('name')->get();
+        $products = Product::where('stock', '>', 0)
+            ->with('category')
+            ->orderBy('name')
+            ->get()
+            ->each(function ($p) {
+                $p->append('image_url');
+            });
 
         return view('sales.create', compact('customers', 'products'));
     }
@@ -148,5 +154,19 @@ class SaleController extends Controller
         $sale->load(['user', 'items.product.category']);
 
         return view('sales.show', compact('sale'));
+    }
+
+    /**
+     * Update order / transaction status (completed, pending, cancelled).
+     */
+    public function updateStatus(Request $request, Sale $sale): RedirectResponse
+    {
+        $validated = $request->validate([
+            'status' => 'required|string|in:completed,pending,cancelled',
+        ]);
+
+        $sale->update(['status' => $validated['status']]);
+
+        return back()->with('success', "Status transaksi #{$sale->invoice_number} berhasil diubah menjadi " . strtoupper($validated['status']) . '!');
     }
 }

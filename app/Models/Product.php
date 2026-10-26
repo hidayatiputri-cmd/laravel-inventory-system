@@ -20,7 +20,24 @@ class Product extends Model
         'purchase_price',
         'selling_price',
         'description',
+        'image',
     ];
+
+    /**
+     * Get product image URL (supports external URL or local uploaded storage).
+     */
+    public function getImageUrlAttribute(): string
+    {
+        if (empty($this->image)) {
+            return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80';
+        }
+
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+
+        return asset('storage/' . $this->image);
+    }
 
     protected function casts(): array
     {

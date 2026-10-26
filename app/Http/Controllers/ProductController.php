@@ -63,6 +63,8 @@ class ProductController extends Controller
             'purchase_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
+            'image_url' => 'nullable|url|max:500',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
         ], [
             'name.required' => 'Nama produk wajib diisi.',
             'sku.required' => 'SKU produk wajib diisi.',
@@ -71,13 +73,25 @@ class ProductController extends Controller
             'minimum_stock.required' => 'Batas minimum stok wajib diisi.',
             'purchase_price.required' => 'Harga beli wajib diisi.',
             'selling_price.required' => 'Harga jual wajib diisi.',
+            'image_file.image' => 'File harus berupa gambar valid (jpeg, png, webp).',
+            'image_file.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
+
+        // Prioritas gambar: File upload > URL input
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->store('products', 'public');
+            $validated['image'] = $path;
+        } elseif (!empty($validated['image_url'])) {
+            $validated['image'] = $validated['image_url'];
+        }
+
+        unset($validated['image_file'], $validated['image_url']);
 
         Product::create($validated);
 
         return redirect()
             ->route('products.index')
-            ->with('success', 'Produk baru berhasil ditambahkan!');
+            ->with('success', 'Produk baru dengan visual foto berhasil ditambahkan!');
     }
 
     /**
@@ -114,6 +128,8 @@ class ProductController extends Controller
             'purchase_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
+            'image_url' => 'nullable|url|max:500',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
         ], [
             'name.required' => 'Nama produk wajib diisi.',
             'sku.required' => 'SKU produk wajib diisi.',
@@ -122,13 +138,24 @@ class ProductController extends Controller
             'minimum_stock.required' => 'Batas minimum stok wajib diisi.',
             'purchase_price.required' => 'Harga beli wajib diisi.',
             'selling_price.required' => 'Harga jual wajib diisi.',
+            'image_file.image' => 'File harus berupa gambar valid (jpeg, png, webp).',
+            'image_file.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
+
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->store('products', 'public');
+            $validated['image'] = $path;
+        } elseif (!empty($validated['image_url'])) {
+            $validated['image'] = $validated['image_url'];
+        }
+
+        unset($validated['image_file'], $validated['image_url']);
 
         $product->update($validated);
 
         return redirect()
             ->route('products.index')
-            ->with('success', 'Data produk berhasil diperbarui!');
+            ->with('success', 'Data produk dan foto visual berhasil diperbarui!');
     }
 
     /**

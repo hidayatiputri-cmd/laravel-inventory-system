@@ -38,6 +38,14 @@ class Sale extends Model
     }
 
     /**
+     * Alias relasi customer ke User.
+     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
      * Relasi ke SaleItems (One to Many).
      */
     public function items(): HasMany

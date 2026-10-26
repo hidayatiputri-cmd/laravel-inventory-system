@@ -79,13 +79,20 @@
                                         {{ $products->firstItem() + $index }}
                                     </td>
                                     <td class="px-5 py-4">
-                                        <div class="font-semibold text-gray-900">
-                                            <a href="{{ route('products.show', $product) }}" class="hover:text-indigo-600 transition">
-                                                {{ $product->name }}
-                                            </a>
-                                        </div>
-                                        <div class="text-xs text-gray-400 truncate max-w-xs">
-                                            {{ $product->description ?? 'Tidak ada deskripsi' }}
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-12 h-12 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 shrink-0 shadow-xs">
+                                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                                            </div>
+                                            <div>
+                                                <div class="font-bold text-gray-900 leading-tight">
+                                                    <a href="{{ route('products.show', $product) }}" class="hover:text-indigo-600 transition">
+                                                        {{ $product->name }}
+                                                    </a>
+                                                </div>
+                                                <div class="text-xs text-gray-400 truncate max-w-xs mt-0.5">
+                                                    {{ $product->description ?? 'Tidak ada deskripsi' }}
+                                                </div>
+                                            </div>
                                         </div>
                                     </td>
                                     <td class="px-5 py-4">

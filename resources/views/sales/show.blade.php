@@ -38,8 +38,10 @@
                     </div>
                     <div class="text-right">
                         <span class="text-xs font-semibold text-gray-400 uppercase">Pelanggan</span>
-                        <h4 class="text-lg font-bold text-gray-800 mt-1">{{ $sale->user->name ?? 'Pelanggan Umum' }}</h4>
-                        @if ($sale->user && $sale->user->email)
+                        <h4 class="text-lg font-bold text-gray-800 mt-1">{{ $sale->customer->name ?? $sale->customer_name ?? 'Pelanggan Umum' }}</h4>
+                        @if ($sale->customer && $sale->customer->email)
+                            <p class="text-xs text-gray-500">{{ $sale->customer->email }}</p>
+                        @elseif ($sale->user && $sale->user->email)
                             <p class="text-xs text-gray-500">{{ $sale->user->email }}</p>
                         @endif
                     </div>
