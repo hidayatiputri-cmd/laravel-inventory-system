@@ -29,18 +29,14 @@ Berikut adalah diagram relasi antar tabel database GoShopping yang dirender seca
 
 ```mermaid
 erDiagram
-    users ||--o{ purchases : "mencatat_pengadaan (user_id)"
-    users ||--o{ sales : "melakukan_transaksi (user_id)"
-
-    categories ||--o{ products : "mengelompokkan (category_id)"
-
-    suppliers ||--o{ purchases : "menyuplai_ke (supplier_id)"
-
-    purchases ||--|{ purchase_items : "memiliki (purchase_id)"
-    products ||--o{ purchase_items : "dibeli_dalam (product_id)"
-
-    sales ||--|{ sale_items : "memiliki (sale_id)"
-    products ||--o{ sale_items : "dijual_dalam (product_id)"
+    users ||--o{ purchases : places
+    users ||--o{ sales : places
+    categories ||--o{ products : contains
+    suppliers ||--o{ purchases : supplies
+    purchases ||--|{ purchase_items : has
+    products ||--o{ purchase_items : included_in
+    sales ||--|{ sale_items : has
+    products ||--o{ sale_items : sold_in
 
     users {
         bigint id PK
@@ -48,7 +44,7 @@ erDiagram
         string email UK
         timestamp email_verified_at
         string password
-        enum role "admin, staff, customer"
+        string role
         string remember_token
         timestamp created_at
         timestamp updated_at
@@ -75,15 +71,15 @@ erDiagram
 
     products {
         bigint id PK
-        bigint category_id FK "nullable"
+        bigint category_id FK
         string name
         string sku UK
         int stock
         int minimum_stock
-        decimal purchase_price "15,2"
-        decimal selling_price "15,2"
+        decimal purchase_price
+        decimal selling_price
         text description
-        string image "nullable"
+        string image
         timestamp created_at
         timestamp updated_at
     }
@@ -92,10 +88,10 @@ erDiagram
         bigint id PK
         string reference_number UK
         bigint supplier_id FK
-        bigint user_id FK "nullable"
+        bigint user_id FK
         date purchase_date
-        decimal total_amount "15,2"
-        string status "pending, completed, cancelled"
+        decimal total_amount
+        string status
         text notes
         timestamp created_at
         timestamp updated_at
@@ -106,8 +102,8 @@ erDiagram
         bigint purchase_id FK
         bigint product_id FK
         int quantity
-        decimal unit_price "15,2"
-        decimal subtotal "15,2"
+        decimal unit_price
+        decimal subtotal
         timestamp created_at
         timestamp updated_at
     }
@@ -115,11 +111,11 @@ erDiagram
     sales {
         bigint id PK
         string invoice_number UK
-        bigint user_id FK "nullable"
+        bigint user_id FK
         date sale_date
-        decimal total_amount "15,2"
-        string payment_method "cash, transfer, dll"
-        string status "pending, completed, cancelled"
+        decimal total_amount
+        string payment_method
+        string status
         text notes
         timestamp created_at
         timestamp updated_at
@@ -130,8 +126,8 @@ erDiagram
         bigint sale_id FK
         bigint product_id FK
         int quantity
-        decimal unit_price "15,2"
-        decimal subtotal "15,2"
+        decimal unit_price
+        decimal subtotal
         timestamp created_at
         timestamp updated_at
     }
